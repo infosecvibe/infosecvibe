@@ -18,4 +18,4 @@ I work in cyber security, mostly around threat intelligence, digital forensics a
   <img src="assets/stats.svg" width="100%" alt="Contribution numbers: total for the past year, current streak, longest streak and busiest day.">
 </p>
 
-<sub>The city and the numbers rebuild themselves every six hours from my contribution calendar. Only daily counts are used, never repository names.</sub>
+<sub>The city and the numbers rebuild themselves every few minutes from my contribution calendar. Only daily counts are used, never repository names.</sub>

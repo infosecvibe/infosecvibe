@@ -1,11 +1,12 @@
 # Rebuilds the profile panels from the contribution calendar.
-# Runs every six hours, on every push, and on demand from the Actions tab.
+# Runs every five minutes (the fastest schedule GitHub allows), on every push,
+# and on demand from the Actions tab. It only commits when something changed.
 # Uses only the built-in token and the Python that ships with the runner.
 name: Refresh profile panels
 
 on:
   schedule:
-    - cron: "23 */6 * * *"
+    - cron: "*/5 * * * *"
   push:
     branches: [main]
   workflow_dispatch:
@@ -38,5 +39,5 @@ jobs:
             echo "Nothing changed."
           else
             git commit -m "Refresh profile panels"
-            git push
+            git push || echo "::warning::Push was beaten by another change. The next run will catch up."
           fi

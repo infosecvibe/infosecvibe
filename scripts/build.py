@@ -10,8 +10,8 @@ public contribution calendar (counts per day, never repository names) with the
 workflow's own token. Run by hand without a token it draws an unlit city, or
 use --sample FILE to draw from a JSON file of {"YYYY-MM-DD": count}.
 
-Lettering is drawn from outlines of Tilt Neon and Chakra Petch (both SIL Open
-Font License) stored in glyphs.json, so the panels look the same on every
+Lettering is drawn from outlines of Audiowide, Monoton and Chakra Petch (all SIL
+Open Font License) stored in glyphs.json, so the panels look the same on every
 machine regardless of installed fonts.
 """
 import datetime as dt
@@ -20,6 +20,7 @@ import os
 import pathlib
 import random
 import sys
+import time
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -39,6 +40,9 @@ PINK = "#ff6bdc"
 AMBER = "#ffb648"
 UNLIT = "#17153d"
 RAMP = ["#135e75", "#1c93ae", "#35cde6", "#aef4ff"]  # one hue, dim to bright
+
+# Lettering for the sign: "sign" is Audiowide bent as outline tubing, "signb" is the Monoton marquee.
+SIGN_FONT = os.environ.get("SIGN_FONT", "sign")
 
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -61,7 +65,8 @@ class Type:
     def width(self, s, font, size, track=0):
         f = GLYPHS[font]
         k = size / f["upm"]
-        return sum(f["g"].get(c, f["g"]["?"])["a"] for c in s) * k + track * max(len(s) - 1, 0)
+        kern = sum(f.get("k", {}).get(a + c, 0) for a, c in zip(s, s[1:]))
+        return (sum(f["g"].get(c, f["g"]["?"])["a"] for c in s) + kern) * k + track * max(len(s) - 1, 0)
 
     def text(self, s, x, y, font, size, fill, anchor="start", track=0, attrs="", cls=None):
         f = GLYPHS[font]
@@ -76,7 +81,7 @@ class Type:
                 self.used[gid] = g["d"]
                 c_attr = f' class="{cls[i]}"' if cls and i in cls else ""
                 uses.append(f'<use href="#{gid}" x="{f2(cx)}"{c_attr}/>')
-            cx += g["a"] + track / k
+            cx += g["a"] + track / k + (f.get("k", {}).get(s[i:i + 2], 0) if i + 1 < len(s) else 0)
         return (f'<g transform="translate({f2(x0)} {f2(y)}) scale({k:.5f} {-k:.5f})" fill="{fill}" {attrs}>'
                 + "".join(uses) + "</g>")
 
@@ -288,17 +293,26 @@ def build_city(weeks):
         lx -= 2
     b.append(t.text("Less", lx - 4, BASE + 39, "ui5", 10.5, MUTED, anchor="end"))
 
-    # the sign
-    name, cls = LOGIN, {7: "fl"} if len(LOGIN) > 7 else None
-    size = 92
-    while t.width(name, "neon", size, 2) > 700:
-        size -= 2
-    def tube(fill, attrs=""):
-        return t.text(name, W / 2, 148, "neon", size, fill, anchor="middle", track=2, attrs=attrs, cls=cls)
-    rim = 'stroke="#ff4fd8" stroke-width="44" stroke-linejoin="round"'
-    sign = (f'<g filter="url(#wide)" opacity=".85">{tube("#ff2fcb", rim)}</g>'
-            f'<g filter="url(#tight)">{tube("#ff4fd8", rim)}</g>'
-            + tube("#ff62dd", rim) + tube("#fff0fc"))
+    # the sign: neon tubing bent around the outline of each letter
+    font = SIGN_FONT
+    name = LOGIN.upper() if font == "signb" else LOGIN
+    cls = {7: "fl"} if len(name) > 7 else None
+    size, track = 100, 3
+    while t.width(name, font, size, track) > 640:
+        size -= 1
+    k = size / GLYPHS[font]["upm"]
+
+    def tube(colour, px, fill="none"):
+        return t.text(name, W / 2, 150, font, size, fill, anchor="middle", track=track, cls=cls,
+                      attrs=f'stroke="{colour}" stroke-width="{px / k:.1f}" stroke-linejoin="round"')
+    if font == "signb":
+        sign = (f'<g filter="url(#wide)" opacity=".85">{tube("#ff4fd8", 4, "#ff2fcb")}</g>'
+                f'<g filter="url(#tight)">{tube("#ff4fd8", 4, "#ff4fd8")}</g>'
+                + tube("#ff62dd", 4, "#ff62dd") + tube("#fff0fc", 0.01, "#fff0fc"))
+    else:
+        sign = (f'<g filter="url(#wide)" opacity=".9">{tube("#ff2fcb", 8)}</g>'
+                f'<g filter="url(#tight)">{tube("#ff4fd8", 6.5, "#ff4fd822")}</g>'
+                + tube("#ff62dd", 4.8) + tube("#fff0fc", 2))
     b.append(f'<g class="sign">{sign}</g>')
     b.append(t.text("Threat intelligence, DFIR and security tooling", W / 2, 190, "ui5", 17, "#a6f4ff",
                     anchor="middle", track=0.5, attrs='class="tag"'))
@@ -441,7 +455,16 @@ def main():
         weeks = weeks_from_days(days, today)
         total = sum(n for wk in weeks for _, n in wk)
     elif token:
-        days, total, weeks = fetch(token)
+        for attempt in range(3):
+            try:
+                days, total, weeks = fetch(token)
+                break
+            except Exception as err:  # a blip should not fail the run; the last good panels stay up
+                problem = err
+                time.sleep(5 * (attempt + 1))
+        else:
+            print(f"::warning::Could not read the contribution calendar ({problem}). Keeping the current panels.")
+            return
         today = max(d for wk in weeks for d, _ in wk)
     else:
         days, total, weeks, have_data = {}, 0, weeks_from_days({}, today), False
