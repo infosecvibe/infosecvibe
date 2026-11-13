@@ -120,7 +120,7 @@ def fetch(token):
     cal = d["contributionsCollection"]["contributionCalendar"]
     cc = d["contributionsCollection"]
     (ROOT / "assets" / "sync.txt").write_text(
-        f"synced {now:%Y-%m-%d %H:%M} UTC\ncalendar total {cal['totalContributions']}\n"
+        f"synced {now:%Y-%m-%d %H}:00 UTC (to the hour)\ncalendar total {cal['totalContributions']}\n"
         f"private counted {cc['restrictedContributionsCount']}\nprivate visible {cc['hasAnyRestrictedContributions']}\n")
     days = {}
     for year in range(int(d["createdAt"][:4]), now.year + 1):
