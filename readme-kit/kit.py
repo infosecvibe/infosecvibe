@@ -7,7 +7,6 @@ inside GitHub, where web fonts cannot load.
 Fonts in glyphs.json (all SIL Open Font License):
   ui5 ui6 ui7     Chakra Petch 500 / 600 / 700   technical UI lettering
   out4 out5 out6  Outfit 400 / 500 / 600         clean geometric sans
-  in4 in5 in6 in7 Inter 400 / 500 / 600 / 700    neutral system-style sans
   sign            Audiowide (letters, digits, hyphen only)   neon tubing
   signb           Monoton   (letters, digits, hyphen only)   retro marquee
 
@@ -18,6 +17,12 @@ Rules that keep panels working on GitHub:
     so a viewer with reduced motion (or a static renderer) still sees everything
   - blur filters go on a wrapper group that has no transform
   - animate opacity, transform and stroke-dashoffset only; never animate a blur
+
+Panels that are shown as GIFs (see capture.py) should be built on Loop, below:
+one timeline of a fixed length that plays the entrance, runs the scene, fades
+out and starts again, so the GIF repeats the entrance every time it loops.
+Every repeating effect inside such a panel needs a period that divides the
+loop length exactly, or the GIF will jump where it restarts.
 """
 import json
 import pathlib
@@ -129,3 +134,91 @@ def node(t, x, y, w, h, title, lines, accent, fill, stroke, ink, ink2, fonts=("u
     for i, line in enumerate(lines):
         out.append(t.text(line, x + 16, y + 44 + i * 16, fonts[1], 11.5, ink2))
     return "".join(out)
+
+
+EASE = "cubic-bezier(.2,.8,.2,1)"
+
+
+class Loop:
+    """One looping timeline for a whole panel. Times are in seconds from the start of the loop.
+
+    Build the content with enter / show / scene / typed / grow, pass it through wrap() so it
+    fades out just before the loop restarts, and add "".join(loop.css) to the panel style.
+    Everything is drawn in its finished state and animated from hidden, so reduced motion
+    still shows the complete picture.
+    """
+
+    def __init__(self, t, seconds, out=0.5):
+        self.t, self.L, self.out, self.css, self.n = t, seconds, out, [], 0
+
+    def kf(self, stops, prefix="k"):
+        """@keyframes from [(seconds, 'css declarations'), ...]; returns the name."""
+        self.n += 1
+        name, pts = f"{prefix}{self.n}", []
+        for s, css in stops:
+            p = round(max(0.0, min(100.0, 100 * s / self.L)), 2)
+            if pts and p <= pts[-1][0]:
+                if css == pts[-1][1]:
+                    continue
+                p = round(min(100.0, pts[-1][0] + 0.01), 2)
+            pts.append((p, css))
+        self.css.append(f"@keyframes {name}{{" + "".join(f"{f2(p)}%{{{c}}}" for p, c in pts) + "}")
+        return name
+
+    def anim(self, name, extra=""):
+        return f'style="{extra}animation:{name} {self.L}s linear infinite"'
+
+    def enter(self, content, at, dx=0, dy=12, scale=1, dur=0.6, origin=None):
+        """Content that arrives at `at`: fades in while moving from (dx, dy) and growing from `scale`.
+        origin=(x, y) is the point it scales about."""
+        hid = f"opacity:0;transform:translate({dx}px,{dy}px) scale({scale})"
+        vis = "opacity:1;transform:translate(0px,0px) scale(1)"
+        name = self.kf([(0, hid), (at, hid + f";animation-timing-function:{EASE}"), (at + dur, vis), (self.L, vis)], "e")
+        o = f"transform-origin:{origin[0]}px {origin[1]}px;" if origin else ""
+        return f"<g {self.anim(name, o)}>{content}</g>"
+
+    def show(self, a, b=None, hi=1, fade=0.25):
+        """Style attribute: appear at a, and vanish at b if given."""
+        stops = [(0, "opacity:0"), (a, "opacity:0"), (a + fade, f"opacity:{hi}")]
+        stops += [(b, f"opacity:{hi}"), (b + fade, "opacity:0"), (self.L, "opacity:0")] if b is not None else [(self.L, f"opacity:{hi}")]
+        return self.anim(self.kf(stops, "s"))
+
+    def scene(self, a, b, content, still=False, dx=22):
+        """A group on screen from a to b, sliding in and out. still: the one shown when motion is off."""
+        hid = f"opacity:0;transform:translateX({dx}px)"
+        vis = "opacity:1;transform:translateX(0px)"
+        name = self.kf([(0, hid), (a, hid + f";animation-timing-function:{EASE}"), (a + 0.5, vis), (b - 0.35, vis),
+                        (b, f"opacity:0;transform:translateX({-dx}px)"), (self.L, f"opacity:0;transform:translateX({-dx}px)")], "c")
+        return f'<g opacity="{1 if still else 0}" {self.anim(name)}>{content}</g>'
+
+    def typed(self, s, x, y, font, size, fill, back, a, b):
+        """Text revealed left to right between a and b. back must be the solid colour behind it."""
+        w = self.t.width(s, font, size) + 4
+        name = self.kf([(0, "transform:scaleX(1)"), (a, f"transform:scaleX(1);animation-timing-function:steps({len(s)},end)"),
+                        (b, "transform:scaleX(0)"), (self.L, "transform:scaleX(0)")], "t")
+        return (self.t.text(s, x, y, font, size, fill)
+                + f'<g transform="translate({x - 2 + w:.0f} {y - size:.0f})"><rect x="{-w:.0f}" width="{w:.0f}" height="{size * 1.45:.0f}" '
+                  f'fill="{back}" transform="scale(0 1)" {self.anim(name)}/></g>')
+
+    def grow(self, x, y, w, h, fill, a, b, rx=3):
+        """A bar that grows from its left end between a and b."""
+        name = self.kf([(0, "transform:scaleX(0)"), (a, f"transform:scaleX(0);animation-timing-function:{EASE}"),
+                        (b, "transform:scaleX(1)"), (self.L, "transform:scaleX(1)")], "g")
+        return f'<g transform="translate({x} {y})"><rect width="{w}" height="{h}" rx="{rx}" fill="{fill}" {self.anim(name)}/></g>'
+
+    def travel(self, pts, a, b, content, hold=0.0):
+        """Moves content (drawn around 0,0) through the points at constant speed between a and b, then fades it."""
+        seg = [0] + [((q[0] - p[0]) ** 2 + (q[1] - p[1]) ** 2) ** 0.5 for p, q in zip(pts, pts[1:])]
+        total, acc = sum(seg) or 1, 0
+        at = lambda p, o: f"transform:translate({f2(p[0])}px,{f2(p[1])}px);opacity:{o}"
+        stops = [(0, at(pts[0], 0)), (max(a - 0.2, 0), at(pts[0], 0))]
+        for p, d in zip(pts, seg):
+            acc += d
+            stops.append((a + (b - a) * acc / total, at(p, 1)))
+        stops += [(b + hold, at(pts[-1], 1)), (b + hold + 0.25, at(pts[-1], 0)), (self.L, at(pts[-1], 0))]
+        return f'<g opacity="0" {self.anim(self.kf(stops, "m"))}>{content}</g>'
+
+    def wrap(self, body):
+        """Fades everything out just before the loop restarts, so the entrance can play again."""
+        name = self.kf([(0, "opacity:1"), (self.L - self.out - 0.1, "opacity:1"), (self.L - 0.1, "opacity:0"), (self.L, "opacity:0")], "w")
+        return f"<g {self.anim(name)}>{body}</g>"
