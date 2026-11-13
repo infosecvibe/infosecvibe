@@ -7,6 +7,7 @@ inside GitHub, where web fonts cannot load.
 Fonts in glyphs.json (all SIL Open Font License):
   ui5 ui6 ui7     Chakra Petch 500 / 600 / 700   technical UI lettering
   out4 out5 out6  Outfit 400 / 500 / 600         clean geometric sans
+  in4 in5 in6 in7 Inter 400 / 500 / 600 / 700    neutral system-style sans
   sign            Audiowide (letters, digits, hyphen only)   neon tubing
   signb           Monoton   (letters, digits, hyphen only)   retro marquee
 
