@@ -1,0 +1,42 @@
+# Rebuilds the profile panels from the contribution calendar.
+# Runs every six hours, on every push, and on demand from the Actions tab.
+# Uses only the built-in token and the Python that ships with the runner.
+name: Refresh profile panels
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-profile
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Get the repository
+        run: git clone --depth 1 "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
+
+      - name: Build the panels
+        run: python3 scripts/build.py
+
+      - name: Save them if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+          else
+            git commit -m "Refresh profile panels"
+            git push
+          fi
