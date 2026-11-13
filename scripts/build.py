@@ -115,9 +115,13 @@ CAL = "contributionCalendar{totalContributions weeks{contributionDays{date contr
 def fetch(token):
     """Returns ({date: count} for the whole account, total shown on the profile, last-year weeks)."""
     now = dt.datetime.now(dt.timezone.utc)
-    d = graphql("query($l:String!){user(login:$l){createdAt contributionsCollection{%s}}}" % CAL,
+    d = graphql("query($l:String!){user(login:$l){createdAt contributionsCollection{restrictedContributionsCount hasAnyRestrictedContributions %s}}}" % CAL,
                 {"l": LOGIN}, token)["user"]
     cal = d["contributionsCollection"]["contributionCalendar"]
+    cc = d["contributionsCollection"]
+    (ROOT / "assets" / "sync.txt").write_text(
+        f"synced {now:%Y-%m-%d %H:%M} UTC\ncalendar total {cal['totalContributions']}\n"
+        f"private counted {cc['restrictedContributionsCount']}\nprivate visible {cc['hasAnyRestrictedContributions']}\n")
     days = {}
     for year in range(int(d["createdAt"][:4]), now.year + 1):
         to = min(dt.datetime(year, 12, 31, 23, 59, 59, tzinfo=dt.timezone.utc), now)
