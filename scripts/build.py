@@ -157,7 +157,7 @@ def summarise(days, total, weeks, today):
             run, run_start = 1, d
         else:
             run = 0
-        if run > best_len:
+        if run and run >= best_len:  # on a tie, the most recent streak wins
             best_len, best_span = run, (run_start, d)
         prev = d
     # current streak may end today or yesterday (today is not over yet)
@@ -402,7 +402,8 @@ def build_stats(s, synced, have_data):
             (str(s["current"]), "day streak, current",
              f'since {nice_date(s["current_start"], False)}' if s["current"] else "no streak running today"),
             (str(s["longest"]), "day streak, longest",
-             f'{nice_date(span[0], False)} to {nice_date(span[1])}' if span else dash),
+             dash if not span else nice_date(span[1]) if span[0] == span[1]
+             else f'{nice_date(span[0], False)} to {nice_date(span[1])}'),
             (str(s["busiest"][1]), "most in a single day",
              nice_date(s["busiest"][0]) if s["busiest"][1] else dash),
         ]
