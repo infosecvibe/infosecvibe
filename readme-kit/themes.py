@@ -9,12 +9,12 @@ repository is for, then override colours with the project's own (its stylesheet,
 
 Presets
   study      learning and practice apps        blue light, floating dust            Outfit
-  hunt       threat hunting, detection         green radar sweep with blips         Chakra Petch
+  hunt       threat hunting, detection         ice-cyan sonar sweep, coral threats  Chakra Petch
   intel      threat intel, OSINT, analysis     violet link graph with signals       Outfit
   forensics  DFIR, timelines, evidence         amber ruler with a scan line         Chakra Petch
   tool       command-line tools, utilities     graphite grid with lit cells         JetBrains Mono
   data       finance, calculators, reports     teal ledger grid                     Outfit
-  lamp       course notes, study guides, reading  warm lamp light, lit windows, motes  Outfit
+  lamp       anything that suits a warm, calm mood (study, reading, notes, writing)   lamp light, lit windows   Outfit
 
 Rules: the preset decides the mood, the project decides the picture. The hero's moving picture
 is always drawn for the project itself (panels.hero takes it as a function). Two repos that are
@@ -60,8 +60,8 @@ class Theme:
 PRESETS = {
     "study": Theme("study", "#0B2C66", "#070A14", "#03040A", "#0B0F1D", "#151B2E", "#0A0E1B", "#27304A",
                    "#0A84FF", "#64D2FF", "#5E5CE6"),
-    "hunt": Theme("hunt", "#0A3B2A", "#060B0A", "#020403", "#09100E", "#12201B", "#070D0B", "#1E3A30",
-                  "#34D399", "#A7F3D0", "#F59E0B", ink2="#8FA89E", soft="#D3E6DE",
+    "hunt": Theme("hunt", "#0B3A4A", "#070B12", "#020409", "#0A0F18", "#121A28", "#080D15", "#1C2738",
+                  "#22D3EE", "#A5F3FC", "#FB7185", ink2="#8FA3B8", soft="#D6E2EE", ok="#2DD4BF", warn="#FDBA74", bad="#FB7185",
                   display="ui7", strong="ui6", medium="ui6", text="ui5", track=1.5, backdrop="radar"),
     "intel": Theme("intel", "#2A1466", "#0A0714", "#040309", "#0E0A1C", "#1A1430", "#0B0818", "#2E2550",
                    "#A78BFA", "#22D3EE", "#F472B6", ink2="#A39CC2", soft="#DDD8F2", backdrop="graph"),

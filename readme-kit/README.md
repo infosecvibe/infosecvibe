@@ -17,18 +17,24 @@ Every README shares the same build quality: a dark rounded panel, a glowing name
 | Preset | For | Backdrop | Lettering |
 |---|---|---|---|
 | `study` | learning and practice apps | blue light, floating dust | Outfit |
-| `hunt` | threat hunting, detection | green radar sweep with blips | Chakra Petch |
+| `hunt` | threat hunting, detection | ice-cyan sonar sweep, one coral for threats | Chakra Petch |
 | `intel` | threat intel, OSINT, analysis | violet link graph with signals | Outfit |
 | `forensics` | DFIR, timelines, evidence | amber ruler with a scan line | Chakra Petch |
 | `tool` | command-line tools, utilities | graphite grid with lit cells | JetBrains Mono |
 | `data` | finance, calculators, reports | teal ledger grid | Outfit |
-| `lamp` | course notes, study guides, reading | warm lamp light, lit windows, motes | Outfit |
+| `lamp` | anything that suits a warm, calm mood: study, reading, notes, writing, personal projects | warm lamp light, lit windows, motes | Outfit |
 
-<img src="samples/hero-hunt.svg" width="100%" alt="The sample banner in the hunt preset: green lettering over a radar sweep.">
+<img src="samples/hero-hunt.svg" width="100%" alt="The sample banner in the hunt preset: ice-cyan lettering over a sonar sweep.">
 <img src="samples/hero-intel.svg" width="100%" alt="The sample banner in the intel preset: violet lettering over a graph of linked nodes.">
 <img src="samples/hero-forensics.svg" width="100%" alt="The sample banner in the forensics preset: amber lettering over a ruler and a scan line.">
 
 The others are in [`samples/`](samples/), with a sample terminal.
+
+Colour rules that hold in every preset:
+
+- **Two accents and a neutral, no more.** One main accent, one hot or contrasting accent used sparingly, and a quiet "done" colour. If a panel needs a scale (tiers, severity), use one ramp that runs through neighbouring hues, cold to hot, never a rainbow.
+- **Avoid muddy pairs.** Saturated green with orange, or red with green, turns brown where their glows overlap. Pair cool with one warm (cyan and coral, blue and amber, violet and pink), or stay within one family.
+- **Each colour means one thing** across every panel in the README.
 
 How to choose:
 
@@ -61,7 +67,7 @@ Pace the panels to the length of the page. A short README needs few; a long, con
 
 **The reference result.** The owner's benchmark ("perfect colour, perfect design, perfect everything") is a long, content-heavy README done this way. Match it:
 
-- A theme chosen from what the project is and coloured from the project's own design, in the project's own typeface. The benchmark happened to be warm (the `lamp` preset) because it was a study project; that warmth is not the standard. Each project keeps the theme that suits its purpose.
+- A theme chosen from what the project is and coloured from the project's own design, in the project's own typeface. The benchmark is warm (the `lamp` preset). Reach for that warm tone whenever a project's subject or mood fits it; it is not tied to one repo, and it is not required where another mood fits better.
 - A banner whose picture shows the project's signature feature working, not a generic diagram.
 - A four-step walkthrough, feature tiles, a how-it-works diagram with traced stories, and a terminal with real output.
 - A small section panel under every wordy section, so the page never runs long without a picture, with all the original text kept underneath.
