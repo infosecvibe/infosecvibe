@@ -34,6 +34,29 @@ Rules for how they move:
 4. **One family, own identity.** Dark panel, 16 px corners, hairline frame, Outfit lettering, a soft glow behind the name. Colours and the hero picture come from the project itself.
 5. **Plain words.** Captions say what happens in the project's own terms. Numbers shown in a demo are labelled as examples.
 
+Rules for the README text:
+
+- **An emoji before every section heading.** Each `##` and `###` heading starts with one emoji that names the section, then a space: `## 🚀 Quick start`. The page title (`#`) has none. Use the same emoji for the same kind of section in every repo:
+
+  | Section | Emoji |
+  |---|---|
+  | See it in action | 🎬 |
+  | What it does / what you can do | ⚡ |
+  | How it works | 🗺️ |
+  | Start here / documentation | 📚 |
+  | Tech stack | 🛠️ |
+  | Quick start | 🚀 |
+  | Requirements / AI features | 🤖 |
+  | Phone and tablet | 📱 |
+  | Checking a build | ✅ |
+  | Packaging a release | 📦 |
+  | Project / repository structure | 📁 |
+  | Security | 🔒 |
+  | Signing in / keys | 🔑 |
+
+  For a section not listed, pick one plain, literal emoji. One per heading, never in body text or bullet points.
+- **Check heading links.** An emoji changes the heading's link anchor (`#-quick-start`, not `#quick-start`). Search the repo for links to the old anchors and fix them.
+
 ## Putting it in a README
 
 Reference each panel with a plain image tag pointing at the `.svg`:
