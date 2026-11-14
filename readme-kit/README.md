@@ -59,6 +59,15 @@ Pace the panels to the length of the page. A short README needs few; a long, con
 
 ## The standard a project README is held to
 
+**The reference result.** The owner's benchmark ("perfect colour, perfect design, perfect everything") is a long, content-heavy README done this way. Match it:
+
+- A theme chosen from what the project is and coloured from the project's own design, in the project's own typeface. Warm and calm (the `lamp` preset, [sample](samples/hero-lamp.svg)) was the one that landed.
+- A banner whose picture shows the project's signature feature working, not a generic diagram.
+- A four-step walkthrough, feature tiles, a how-it-works diagram with traced stories, and a terminal with real output.
+- A small section panel under every wordy section, so the page never runs long without a picture, with all the original text kept underneath.
+- One palette across every panel, with each colour meaning one thing (done, open, cached).
+- Every panel at 60 frames a second, every fact checked in the code, every example labelled as an example.
+
 Every picture in the README moves and is drawn for the project. No still screenshots and no screenshot slideshows in the README itself; real screenshots belong in a linked gallery.
 
 A full set is up to seven panels and a divider:
