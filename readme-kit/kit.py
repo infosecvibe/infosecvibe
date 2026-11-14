@@ -11,6 +11,7 @@ Fonts in glyphs.json (all SIL Open Font License):
   signb           Monoton   (letters, digits, hyphen only)   retro marquee
   in4 in5 in6 in7 Inter 400 to 700               neutral UI lettering
   mono4 mono7     JetBrains Mono 400 / 700       terminals, code, command-line tools
+  wd5 wd7 wt4 wt6 Wix Madefor Display 500 / 700, Text 400 / 600   calm editorial sans (no kerning data)
 
 Rules that keep panels working on GitHub:
   - one self-contained .svg per panel, referenced from the README by relative path

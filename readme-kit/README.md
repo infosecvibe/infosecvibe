@@ -8,7 +8,7 @@ Helpers for building animated panels for a repository README: lettering drawn as
 - `kit.py`: the low-level helpers and `Loop`, the timeline every panel is built on. The rules that keep panels working on GitHub are at the top of the file.
 - `perf.py`: checks that a panel is valid and plays at 60 frames a second, the way GitHub shows it. Run it before every push.
 - `capture.py`: fallback only. Turns a panel into a GIF for places that cannot show SVG. Not for READMEs.
-- `glyphs.json`: letter outlines for Outfit, Chakra Petch, Inter, JetBrains Mono, Audiowide and Monoton (all SIL Open Font License)
+- `glyphs.json`: letter outlines for Outfit, Chakra Petch, Inter, JetBrains Mono, Wix Madefor, Audiowide and Monoton (all SIL Open Font License). If a project bundles its own open-licence typeface, add it here and use it.
 
 ## One family, a different look for each kind of repo
 
