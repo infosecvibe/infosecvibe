@@ -48,10 +48,11 @@ def window(th, x, y, w, h, title, t, font=None, rx=14):
 
 
 # ------------------------------------------------------------------ hero
-def hero(th, name, kind, lines, chips, picture, tag=None, label=None, W=840, H=400, L=16, seed=11, size=92):
+def hero(th, name, kind, lines, chips, picture, tag=None, label=None, W=840, H=400, L=16, seed=11, size=92, name_width=340):
     """The banner. Left: the name rising in with a glow, what kind of thing it is, one sentence, three tags.
     Right (x from about 400 to 820): picture(lp, t, th) -> (svg, defs, css), one moving picture of what
-    the project does, drawn for this project. Use lp.enter(...) from about 0.7 s so it arrives after the name."""
+    the project does, drawn for this project. Use lp.enter(...) from about 0.7 s so it arrives after the name.
+    A long name shrinks until it fits name_width; widen it (up to about 390) and keep the picture right of x = 430."""
     t = Type()
     lp = Loop(t, L)
     rng = random.Random(seed)
@@ -60,7 +61,7 @@ def hero(th, name, kind, lines, chips, picture, tag=None, label=None, W=840, H=4
     c = []
     wx, wy = 44, 150
     k = size / GLYPHS[th.display]["upm"]
-    while t.width(name, th.display, size, th.track) > 340 and size > 40:   # long names shrink to fit the text column
+    while t.width(name, th.display, size, th.track) > name_width and size > 40:   # long names shrink to fit the text column
         size -= 4
         k = size / GLYPHS[th.display]["upm"]
     c.append(lp.enter(f'<g filter="url(#halo)" opacity=".6">{t.text(name, wx, wy, th.display, size, th.a, track=th.track)}</g>', 0.5, dy=0, dur=1.4))
