@@ -9,6 +9,8 @@ Fonts in glyphs.json (all SIL Open Font License):
   out4 out5 out6  Outfit 400 / 500 / 600         clean geometric sans
   sign            Audiowide (letters, digits, hyphen only)   neon tubing
   signb           Monoton   (letters, digits, hyphen only)   retro marquee
+  in4 in5 in6 in7 Inter 400 to 700               neutral UI lettering
+  mono4 mono7     JetBrains Mono 400 / 700       terminals, code, command-line tools
 
 Rules that keep panels working on GitHub:
   - one self-contained .svg per panel, referenced from the README by relative path
@@ -73,6 +75,7 @@ class Type:
 
 def panel(w, h, label, style, defs, body):
     """Wraps a panel. label becomes the accessible name; reduced motion is respected."""
+    label = label.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
             f'role="img" aria-label="{label}">\n<title>{label}</title>\n'
             f'<style>{style}@media (prefers-reduced-motion:reduce){{*{{animation:none!important}}}}</style>\n'
