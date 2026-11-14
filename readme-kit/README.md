@@ -47,13 +47,14 @@ svg, loop = terminal(th, "name", [("cmd", "real command"), ("ok", "real output")
 
 ## How much should move
 
-Enough that the page feels alive, not so much that nothing stands out.
+Pace the panels to the length of the page. A short README needs few; a long, content-heavy one needs more, or it reads as a wall of text.
 
-- **Always:** the banner and one walkthrough (`demo`).
-- **Usually:** feature tiles, a how-it-works diagram, and a typing terminal above the quick-start code block.
-- **Only when the project has that story:** a security panel, a pairing or setup sequence, a devices panel.
-- **Leave as text:** reference tables, file trees, long command lists, changelogs. A reader scanning for a fact should not have to wait for an animation.
-- Keep the real, copyable text under every panel. A panel shows the idea; the text is what people copy.
+- **Every README:** the banner and one walkthrough (`demo`).
+- **Most READMEs:** feature tiles, a how-it-works diagram, and a typing terminal above the quick-start code block.
+- **Long READMEs:** no more than about two screens of plain text in a row. Give each major section that explains an idea, a flow or a set of choices its own small section panel, placed directly under the heading. Good candidates: themes or modes, keyboard shortcuts, a course or feature map, where the data goes, privacy or security, install or pairing steps.
+- **Section panels are quieter than the banner:** about 250 to 330 px tall, one idea each, a 12 to 15 second loop, a flat panel background with no backdrop.
+- **The text stays.** A panel sits above its section's text and never replaces it. Reference tables, file trees, command lists and changelogs stay as copyable text under the panel.
+- **Stop when sections run out.** Don't add a panel to a section that is only a table of facts or a list of links, and never two panels in a row with no text between them (the banner and dividers aside).
 
 ## The standard a project README is held to
 
