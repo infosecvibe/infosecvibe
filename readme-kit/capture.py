@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
-"""Turns an animated .svg or .html panel into a looping .gif (--gif) and/or .webp (--webp).
+"""FALLBACK ONLY: turns an animated .svg panel into a looping .gif (--gif) and/or .webp (--webp).
+
+Do not use GIFs as README art. A GIF plays at about 20 fps and the owner found it
+laggy; the README must show the animated .svg itself (plain <img> tag), which runs
+at 60 fps or more. Use this only when a still-compatible copy is needed somewhere
+that cannot show SVG at all (a chat message, a slide).
 
     python3 capture.py panel.svg out_dir --loop 16 --start 0 --fps 20 --gif --bg transparent
 
-Why: the GitHub phone app shows a broken-image icon for some animated SVG setups,
-while ordinary image files always load. Capture the panel once and reference the
-.gif from the README with a plain <img>.
+  --start 0         for a panel built on kit.Loop: the entrance is part of the loop.
+  --bg transparent  keeps the panel's rounded corners see-through.
 
-How: the page's CSS animations are paused and stepped frame by frame, so the
-result is smooth and loops exactly.
-
-  --start 0         for a panel built on kit.Loop: the entrance is part of the loop
-                    and replays every time. (The default, --start = --loop, skips
-                    one-off entrance animations instead, which leaves a GIF with no intro.)
-  --bg transparent  keeps the panel's rounded corners see-through, so it sits on
-                    GitHub's light and dark themes alike. Any other value is a corner colour.
-  --fps 20          GIF frame times are whole hundredths of a second, so 20 or 25 play evenly.
-
-Needs: Playwright (pip install playwright), Google Chrome and ffmpeg. If gifsicle is
-installed (npm i gifsicle, or your package manager) the GIF is also optimised with it,
-which matters a lot with --bg transparent; --lossy 0 keeps that step lossless.
+Needs: Playwright (pip install playwright), Google Chrome and ffmpeg; gifsicle if
+installed is used to shrink the result (essential with --bg transparent).
 """
 import argparse, asyncio, pathlib, shutil, subprocess, tempfile
 

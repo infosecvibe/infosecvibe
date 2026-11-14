@@ -18,11 +18,14 @@ Rules that keep panels working on GitHub:
   - blur filters go on a wrapper group that has no transform
   - animate opacity, transform and stroke-dashoffset only; never animate a blur
 
-Panels that are shown as GIFs (see capture.py) should be built on Loop, below:
-one timeline of a fixed length that plays the entrance, runs the scene, fades
-out and starts again, so the GIF repeats the entrance every time it loops.
-Every repeating effect inside such a panel needs a period that divides the
-loop length exactly, or the GIF will jump where it restarts.
+Frame rate: the owner requires 60 fps or more. Show panels in the README as
+animated .svg files with a plain <img> tag; the browser then draws them at the
+screen's refresh rate. Never ship GIFs as the README art: a GIF tops out around
+20 fps and looks sluggish. Measure with perf.py before pushing.
+
+Build panels on Loop, below: one timeline of a fixed length that plays the
+entrance, runs the scene, fades out and starts again. Every repeating effect
+inside such a panel should have a period that divides the loop length.
 """
 import json
 import pathlib

@@ -2,10 +2,10 @@
 """A starting point for a project banner built on kit.Loop. Copy it, rename things, change the picture.
 
     python3 starter.py                      # writes hero.svg next to this file
-    python3 capture.py hero.svg . --loop 12 --start 0 --fps 20 --gif --bg transparent
+    python3 perf.py hero.svg                # must say OK (60 fps) before you push
 
-The banner plays an entrance, runs for a while, fades and starts again, so the GIF
-repeats the entrance every loop. Every repeating effect has a period that divides
+Show hero.svg in the README with a plain <img> tag. Do not convert it to a GIF.
+The banner plays an entrance, runs for a while, fades and starts again. Every repeating effect has a period that divides
 the loop length (12 s here: 1, 2, 3, 4, 6 and 12 all work).
 """
 import pathlib
