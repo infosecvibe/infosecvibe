@@ -22,12 +22,13 @@ Every README shares the same build quality: a dark rounded panel, a glowing name
 | `forensics` | DFIR, timelines, evidence | amber ruler with a scan line | Chakra Petch |
 | `tool` | command-line tools, utilities | graphite grid with lit cells | JetBrains Mono |
 | `data` | finance, calculators, reports | teal ledger grid | Outfit |
+| `lamp` | course notes, study guides, reading | warm lamp light, lit windows, motes | Outfit |
 
 <img src="samples/hero-hunt.svg" width="100%" alt="The sample banner in the hunt preset: green lettering over a radar sweep.">
 <img src="samples/hero-intel.svg" width="100%" alt="The sample banner in the intel preset: violet lettering over a graph of linked nodes.">
 <img src="samples/hero-forensics.svg" width="100%" alt="The sample banner in the forensics preset: amber lettering over a ruler and a scan line.">
 
-The other three are in [`samples/`](samples/), with a sample terminal.
+The others are in [`samples/`](samples/), with a sample terminal.
 
 How to choose:
 

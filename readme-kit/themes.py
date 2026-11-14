@@ -14,6 +14,7 @@ Presets
   forensics  DFIR, timelines, evidence         amber ruler with a scan line         Chakra Petch
   tool       command-line tools, utilities     graphite grid with lit cells         JetBrains Mono
   data       finance, calculators, reports     teal ledger grid                     Outfit
+  lamp       course notes, study guides, reading  warm lamp light, lit windows, motes  Outfit
 
 Rules: the preset decides the mood, the project decides the picture. The hero's moving picture
 is always drawn for the project itself (panels.hero takes it as a function). Two repos that are
@@ -50,7 +51,7 @@ class Theme:
     mono: str = "mono4"
     mono_bold: str = "mono7"
     track: float = 0        # extra letter spacing for the name
-    backdrop: str = "dust"  # dust | radar | graph | scan | grid
+    backdrop: str = "dust"  # dust | radar | graph | scan | grid | lamp
 
     def fonts(self):
         return {self.display, self.strong, self.medium, self.text, self.mono, self.mono_bold}
@@ -72,6 +73,8 @@ PRESETS = {
                   display="mono7", strong="mono7", medium="mono7", text="mono4", track=-2, backdrop="grid"),
     "data": Theme("data", "#064E48", "#060D0D", "#020505", "#091312", "#11221F", "#07100F", "#1D3B37",
                   "#2DD4BF", "#99F6E4", "#818CF8", ink2="#8FAAA6", soft="#D3E8E4", backdrop="grid"),
+    "lamp": Theme("lamp", "#5A3A14", "#13100D", "#080604", "#15120E", "#241E17", "#1B1611", "#3A3026",
+                  "#F2B66D", "#FFDCA8", "#E58E73", ink="#F6EEDF", ink2="#A89B88", soft="#DDD0BC", ok="#A8C69A", backdrop="lamp"),
 }
 
 
@@ -164,6 +167,16 @@ def backdrop(th, W, H, rng, x0=0, density=1.0):
                     f'style="animation-duration:{rng.choice([5, 7, 9])}s;animation-delay:-{rng.uniform(0, 9):.1f}s"/>')
         css += ".cell{animation:cell 7s ease-in-out infinite}@keyframes cell{0%,100%{opacity:0}50%{opacity:.16}}"
         return out, css
+    if kind == "lamp":   # a far row of lit windows low on the horizon, and slow motes in the lamp light
+        out, hy, x = glows, H - 34, x0
+        while x < W - 8:
+            if rng.random() < 0.6:
+                out += (f'<rect x="{x}" y="{hy - rng.choice([0, 3, 6])}" width="2.5" height="3.5" rx=".6" fill="{rng.choice([th.a, th.b, th.b])}" class="win" '
+                        f'style="animation-duration:{rng.choice([5, 7, 9])}s;animation-delay:-{rng.uniform(0, 9):.1f}s"/>')
+            x += rng.choice([7, 9, 12, 16])
+        out += f'<path d="M{x0} {hy + 8}H{W}" stroke="{th.a}" stroke-opacity=".18"/>'
+        css += ".win{animation:win 7s ease-in-out infinite}@keyframes win{0%,100%{opacity:.75}50%{opacity:.2}}"
+        return out + dust(26), css
     return glows + dust(34), css
 
 
