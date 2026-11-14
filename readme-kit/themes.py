@@ -9,7 +9,7 @@ repository is for, then override colours with the project's own (its stylesheet,
 
 Presets
   study      learning and practice apps        blue light, floating dust            Outfit
-  hunt       threat hunting, detection         ice-cyan sonar sweep, coral threats  Chakra Petch
+  hunt       threat hunting, detection         crimson radar on graphite, steel     Chakra Petch
   intel      threat intel, OSINT, analysis     violet link graph with signals       Outfit
   forensics  DFIR, timelines, evidence         amber ruler with a scan line         Chakra Petch
   tool       command-line tools, utilities     graphite grid with lit cells         JetBrains Mono
@@ -60,8 +60,8 @@ class Theme:
 PRESETS = {
     "study": Theme("study", "#0B2C66", "#070A14", "#03040A", "#0B0F1D", "#151B2E", "#0A0E1B", "#27304A",
                    "#0A84FF", "#64D2FF", "#5E5CE6"),
-    "hunt": Theme("hunt", "#0B3A4A", "#070B12", "#020409", "#0A0F18", "#121A28", "#080D15", "#1C2738",
-                  "#22D3EE", "#A5F3FC", "#FB7185", ink2="#8FA3B8", soft="#D6E2EE", ok="#2DD4BF", warn="#FDBA74", bad="#FB7185",
+    "hunt": Theme("hunt", "#4A0E18", "#0B0A0C", "#040304", "#0E0D10", "#1A181D", "#0A090B", "#2A262E",
+                  "#F43F5E", "#FDA4AF", "#94A3B8", ink2="#9A95A0", soft="#DDD9E0", ok="#E2E8F0", warn="#FDBA74", bad="#F43F5E",
                   display="ui7", strong="ui6", medium="ui6", text="ui5", track=1.5, backdrop="radar"),
     "intel": Theme("intel", "#2A1466", "#0A0714", "#040309", "#0E0A1C", "#1A1430", "#0B0818", "#2E2550",
                    "#A78BFA", "#22D3EE", "#F472B6", ink2="#A39CC2", soft="#DDD8F2", backdrop="graph"),

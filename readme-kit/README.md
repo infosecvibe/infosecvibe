@@ -17,14 +17,14 @@ Every README shares the same build quality: a dark rounded panel, a glowing name
 | Preset | For | Backdrop | Lettering |
 |---|---|---|---|
 | `study` | learning and practice apps | blue light, floating dust | Outfit |
-| `hunt` | threat hunting, detection | ice-cyan sonar sweep, one coral for threats | Chakra Petch |
+| `hunt` | threat hunting, detection | crimson radar sweep on graphite, cold steel | Chakra Petch |
 | `intel` | threat intel, OSINT, analysis | violet link graph with signals | Outfit |
 | `forensics` | DFIR, timelines, evidence | amber ruler with a scan line | Chakra Petch |
 | `tool` | command-line tools, utilities | graphite grid with lit cells | JetBrains Mono |
 | `data` | finance, calculators, reports | teal ledger grid | Outfit |
 | `lamp` | anything that suits a warm, calm mood: study, reading, notes, writing, personal projects | warm lamp light, lit windows, motes | Outfit |
 
-<img src="samples/hero-hunt.svg" width="100%" alt="The sample banner in the hunt preset: ice-cyan lettering over a sonar sweep.">
+<img src="samples/hero-hunt.svg" width="100%" alt="The sample banner in the hunt preset: a crimson glow and radar sweep on graphite.">
 <img src="samples/hero-intel.svg" width="100%" alt="The sample banner in the intel preset: violet lettering over a graph of linked nodes.">
 <img src="samples/hero-forensics.svg" width="100%" alt="The sample banner in the forensics preset: amber lettering over a ruler and a scan line.">
 
@@ -35,6 +35,9 @@ Colour rules that hold in every preset:
 - **Two accents and a neutral, no more.** One main accent, one hot or contrasting accent used sparingly, and a quiet "done" colour. If a panel needs a scale (tiers, severity), use one ramp that runs through neighbouring hues, cold to hot, never a rainbow.
 - **Avoid muddy pairs.** Saturated green with orange, or red with green, turns brown where their glows overlap. Pair cool with one warm (cyan and coral, blue and amber, violet and pink), or stay within one family.
 - **Each colour means one thing** across every panel in the README.
+- **No two repos share a main colour.** Before choosing, list the main colour of every README already done and pick one that is clearly different at a glance. Blue and cyan count as the same; so do amber and orange.
+- **When unsure, show options.** Render the banner in two or three palettes as one still image and let the owner choose before recolouring everything.
+- **Give the banner one signature effect** that fits the subject (a lock-on reticle, a climbing sheen, a pulse at the focal point), on top of the entrance.
 
 How to choose:
 
