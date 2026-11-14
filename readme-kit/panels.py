@@ -3,6 +3,9 @@
     hero(th, name, kind, lines, chips, picture)   the banner; picture is a function you write
     terminal(th, title, script)                    a terminal that types real commands
     features(th, items, label)                     tiles whose icons draw themselves
+    steps(th, title, items)                        numbered cards lit in turn, each ending on a result (section panel)
+    stack(th, title, rows)                         labelled slabs lit in turn (section panel)
+    timeline(th, title, points)                    a light running along dated or versioned points (section panel)
     divider(th)                                    a thin line with a light running along it
 
 Each returns (svg_text, loop_seconds). They are built on kit.Loop: entrance, scene, fade, repeat.
@@ -221,6 +224,111 @@ def features(th, items, label, cols=4, W=840, L=None):
     defs = clip + "".join(f'<radialGradient id="lit{k}"><stop offset="0" stop-color="{getattr(th, k)}" stop-opacity=".35"/><stop offset="1" stop-color="{getattr(th, k)}" stop-opacity="0"/></radialGradient>'
                           for k in "abc") + t.defs()
     return finish(lp, W, H, label, defs, base, c, css), L
+
+
+# ------------------------------------------------------------------ section panels
+def _fit(t, s, font, size, width, floor=8.5):
+    """The largest size up to `size` at which s fits in width."""
+    while size > floor and t.width(s, font, size) > width:
+        size -= 0.5
+    return size
+
+
+def steps(th, title, items, note=None, label=None, arrows=True, W=840):
+    """A quiet section panel: two to four cards, lit one after another, each ending on a typed result and a tick.
+    items: [(heading, [line, line], result)]. arrows=True numbers them and joins them as a sequence;
+    arrows=False shows them as parallel choices. note: one line under the cards."""
+    t = Type()
+    n = len(items)
+    gap = 26 if arrows else 12
+    cw = (W - 52 - gap * (n - 1)) / n
+    H = 62 + 132 + (44 if note else 22)
+    L = max(10, round(2.2 + n * 2.3 + 1.4))
+    lp = Loop(t, L)
+    clip, base = surface(W, H, th.panel, th.line)
+    c = [lp.enter(t.text(title, 26, 42, th.strong, 15.5, th.ink), 0.1, dy=8)]
+    for i, (head, lines, result) in enumerate(items):
+        x, y, at = 26 + i * (cw + gap), 62, 2.2 + i * 2.3
+        colour = (th.a, th.b, th.c)[i % 3]
+        hx = x + (44 if arrows else 18)
+        card = (f'<rect x="{x:.0f}" y="{y}" width="{cw:.0f}" height="132" rx="12" fill="{th.glass}" stroke="{th.line}"/>'
+                f'<g opacity="0" {lp.show(at, at + 2.1, fade=0.2)}><rect x="{x:.0f}" y="{y}" width="{cw:.0f}" height="132" rx="12" fill="none" stroke="{colour}" stroke-width="1.6"/></g>')
+        if arrows:
+            card += (f'<circle cx="{x + 24:.0f}" cy="{y + 26}" r="12" fill="{th.stage}" stroke="{colour}" stroke-width="1.5"/>'
+                     + t.text(str(i + 1), x + 24, y + 30.5, th.strong, 12.5, th.ink, anchor="middle"))
+        else:
+            card += f'<rect x="{x:.0f}" y="{y + 14}" width="3" height="24" rx="1.5" fill="{colour}"/>'
+        card += t.text(head, hx, y + 31, th.strong, _fit(t, head, th.strong, 13.5, cw - (hx - x) - 12), th.ink)
+        for j, line in enumerate(lines):
+            card += t.text(line, x + 16, y + 58 + j * 16, th.text, _fit(t, line, th.text, 11.5, cw - 28), th.ink2)
+        rs = _fit(t, result, th.mono, 10.5, cw - 52)
+        card += (f'<path d="M{x + 14:.0f} {y + 96}H{x + cw - 14:.0f}" stroke="{th.line}"/>'
+                 + lp.typed(result, x + 16, y + 117, th.mono, rs, th.soft, th.glass, at + 0.3, at + 1.1)
+                 + f'<g opacity="0" {lp.show(at + 1.2, fade=0.15)}>' + tick(x + cw - 22, y + 113, th.ok, 0.7, 2) + "</g>")
+        c.append(lp.enter(card, 0.3 + i * 0.12, dy=14, dur=0.5))
+        if arrows and i < n - 1:
+            ax = x + cw
+            c.append(lp.enter(f'<path d="M{ax + 5:.0f} {y + 66}H{ax + gap - 9:.0f}" stroke="{colour}" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 7" class="flow"/>'
+                              f'<polygon points="{ax + gap - 3:.0f},{y + 66} {ax + gap - 10:.0f},{y + 61} {ax + gap - 10:.0f},{y + 71}" fill="{colour}"/>', 1.0, dy=0))
+    if note:
+        c.append(lp.enter(t.text(note, 26, H - 18, th.text, _fit(t, note, th.text, 12, W - 52), th.ink2), 1.2, dy=0))
+    return finish(lp, W, H, label or f"{title}: " + "; ".join(i[0] for i in items) + ".", clip + t.defs(), base, c, FLOW), L
+
+
+def stack(th, title, rows, note=None, label=None, W=840):
+    """A quiet section panel: labelled slabs that slide in and light up in turn. rows: [(name, text, "a" | "b" | "c")]."""
+    t = Type()
+    n = len(rows)
+    H = 62 + n * 40 + (36 if note else 14)
+    L = max(10, round(2.2 + n * 1.6 + 1.4))
+    lp = Loop(t, L)
+    clip, base = surface(W, H, th.panel, th.line)
+    c = [lp.enter(t.text(title, 26, 42, th.strong, 15.5, th.ink), 0.1, dy=8)]
+    nw = max(t.width(r[0], th.strong, 13) for r in rows) + 44
+    for i, (name, text, key) in enumerate(rows):
+        y, at, colour = 62 + i * 40, 2.2 + i * 1.6, getattr(th, key)
+        slab = (f'<rect x="26" y="{y}" width="{W - 52}" height="32" rx="10" fill="{th.glass}" stroke="{th.line}"/>'
+                f'<g opacity="0" {lp.show(at, at + 1.5, fade=0.2)}><rect x="26" y="{y}" width="{W - 52}" height="32" rx="10" fill="{colour}" fill-opacity=".1" stroke="{colour}" stroke-width="1.5"/></g>'
+                f'<rect x="26" y="{y + 8}" width="3" height="16" rx="1.5" fill="{colour}"/>'
+                + t.text(name, 42, y + 21, th.strong, 13, th.ink)
+                + t.text(text, 26 + nw, y + 21, th.text, _fit(t, text, th.text, 12, W - 52 - nw - 14), th.soft))
+        c.append(lp.enter(slab, 0.3 + i * 0.1, dx=-18 if i % 2 else 18, dy=0, dur=0.5))
+    if note:
+        c.append(lp.enter(t.text(note, 26, H - 16, th.text, _fit(t, note, th.text, 12, W - 52), th.ink2), 1.2, dy=0))
+    return finish(lp, W, H, label or f"{title}: " + "; ".join(f"{r[0]}, {r[1]}" for r in rows) + ".", clip + t.defs(), base, c), L
+
+
+def timeline(th, title, points, note=None, label=None, W=840):
+    """A quiet section panel: a light runs along a line of points and each lights as it arrives.
+    points: [(tag, heading, line)], three to five; tag is a version or date."""
+    t = Type()
+    n = len(points)
+    H = 62 + 118 + (36 if note else 14)
+    step = 1.8
+    L = max(10, round(2.4 + (n - 1) * step + 3))
+    lp = Loop(t, L)
+    clip, base = surface(W, H, th.panel, th.line)
+    c = [lp.enter(t.text(title, 26, 42, th.strong, 15.5, th.ink), 0.1, dy=8)]
+    y, x0, x1 = 104, 90, W - 90
+    xs = [x0 + (x1 - x0) * i / (n - 1) for i in range(n)]
+    col = (x1 - x0) / (n - 1) - 16
+    fill = lp.kf([(0, "transform:scaleX(0)"), (2.4, "transform:scaleX(0)"), (2.4 + (n - 1) * step, "transform:scaleX(1)"), (L, "transform:scaleX(1)")], "g")
+    c.append(lp.enter(f'<path d="M{x0} {y}H{x1}" stroke="{th.line}" stroke-width="2"/>', 0.6, dy=0)
+             + f'<g transform="translate({x0} {y - 1})"><rect width="{x1 - x0}" height="2" fill="{th.a}" {lp.anim(fill)}/></g>')
+    c.append(lp.travel([(x0, y), (x1, y)], 2.4, 2.4 + (n - 1) * step, f'<circle r="10" fill="{th.a}" opacity=".3"/><circle r="4" fill="#fff"/>'))
+    for i, (tag, head, line) in enumerate(points):
+        x, at = xs[i], 2.4 + i * step
+        last = i == n - 1
+        p = (f'<circle cx="{x:.0f}" cy="{y}" r="9" fill="{th.stage}" stroke="{th.line}" stroke-width="2"/>'
+             f'<g opacity="0" {lp.show(at, fade=0.2)}><circle cx="{x:.0f}" cy="{y}" r="9" fill="{th.a}"/>'
+             + (f'<circle cx="{x:.0f}" cy="{y}" r="15" fill="none" stroke="{th.b}" stroke-width="1.5" opacity=".7"/>' if last else "") + "</g>"
+             + t.text(tag, x, y - 20, th.mono_bold, 12, th.b if last else th.ink, anchor="middle")
+             + t.text(head, x, y + 34, th.strong, _fit(t, head, th.strong, 13, col), th.ink, anchor="middle")
+             + (t.text(line, x, y + 52, th.text, _fit(t, line, th.text, 11, col), th.ink2, anchor="middle") if line else ""))
+        c.append(lp.enter(p, 0.4 + i * 0.12, dy=12, dur=0.5))
+    if note:
+        c.append(lp.enter(t.text(note, 26, H - 16, th.text, _fit(t, note, th.text, 12, W - 52), th.ink2), 1.2, dy=0))
+    return finish(lp, W, H, label or f"{title}: " + "; ".join(f"{p[0]} {p[1]}" for p in points) + ".", clip + t.defs(), base, c), L
 
 
 # ------------------------------------------------------------------ divider

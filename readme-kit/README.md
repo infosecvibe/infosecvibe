@@ -3,7 +3,7 @@
 Helpers for building animated panels for a repository README: lettering drawn as outlines, glow, neon tubing, diagram boxes, moving connectors, and a looping timeline. Python standard library only.
 
 - `themes.py`: one look per kind of project (palette, lettering, moving backdrop). Start here.
-- `panels.py`: ready-made panels that take a theme: banner, typing terminal, feature tiles, divider.
+- `panels.py`: ready-made panels that take a theme: banner, typing terminal, feature tiles and divider, plus three quiet section panels for wordy sections: `steps` (numbered or parallel cards ending on a result), `stack` (labelled slabs) and `timeline` (versions or dates).
 - `starter.py`: a complete small example. Copy it to begin a new project's art.
 - `kit.py`: the low-level helpers and `Loop`, the timeline every panel is built on. The rules that keep panels working on GitHub are at the top of the file.
 - `perf.py`: checks that a panel is valid and plays at 60 frames a second, the way GitHub shows it. Run it before every push.
@@ -61,7 +61,7 @@ Pace the panels to the length of the page. A short README needs few; a long, con
 
 **The reference result.** The owner's benchmark ("perfect colour, perfect design, perfect everything") is a long, content-heavy README done this way. Match it:
 
-- A theme chosen from what the project is and coloured from the project's own design, in the project's own typeface. Warm and calm (the `lamp` preset, [sample](samples/hero-lamp.svg)) was the one that landed.
+- A theme chosen from what the project is and coloured from the project's own design, in the project's own typeface. The benchmark happened to be warm (the `lamp` preset) because it was a study project; that warmth is not the standard. Each project keeps the theme that suits its purpose.
 - A banner whose picture shows the project's signature feature working, not a generic diagram.
 - A four-step walkthrough, feature tiles, a how-it-works diagram with traced stories, and a terminal with real output.
 - A small section panel under every wordy section, so the page never runs long without a picture, with all the original text kept underneath.
